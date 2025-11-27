@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Načítání odpočtu...</title>
+  <title>Maturitní ples 4.I – ukázka před odpočtem</title>
 
   <style>
     * { margin:0; padding:0; box-sizing:border-box; }
@@ -32,8 +32,8 @@
       border:3px solid rgba(212,175,55,0.9);
       border-radius:18px;
       box-shadow:0 0 18px rgba(0,0,0,0.7);
-      background:rgba(0,0,0,0.7);
-      padding:18px 16px 20px;
+      background:rgba(0,0,0,0.75);
+      padding:18px 16px 22px;
     }
 
     .title {
@@ -71,62 +71,82 @@
       display:block;
     }
 
-    .loading-text {
+    .info {
       margin-top:10px;
-      font-size:0.88rem;
+      font-size:0.85rem;
       color:#f0e6d5;
     }
 
-    .loading-text span {
+    .info span {
       color:#ffd966;
       font-weight:600;
     }
 
+    .btn-wrap {
+      margin-top:14px;
+    }
+
+    .cta-btn {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+      padding:10px 26px;
+      border-radius:999px;
+      background-image:linear-gradient(135deg, #5a0f16, #2b0608);
+      border:2px solid #d4af37;
+      color:#fff9e6;
+      font-size:0.95rem;
+      font-weight:700;
+      letter-spacing:0.13em;
+      text-transform:uppercase;
+      text-decoration:none;
+      box-shadow:0 0 16px rgba(0,0,0,0.6);
+      transition:0.18s;
+      white-space:nowrap;
+    }
+
+    .cta-btn:hover {
+      transform:scale(1.04);
+      box-shadow:0 0 22px rgba(212,175,55,0.9);
+    }
+
     .hint {
-      margin-top:4px;
+      margin-top:6px;
       font-size:0.75rem;
-      opacity:0.75;
+      opacity:0.8;
     }
   </style>
 </head>
 <body>
 
   <div class="card">
-    <h1 class="title">Načítám odpočet…</h1>
+    <h1 class="title">Maturitní ples 4.I</h1>
     <p class="subtitle">
-      Nejprve krátká „ukázka“, potom tě automaticky přesměrujeme na stránku s odpočtem.
+      Než přejdeš na stránku s odpočtem, podívej se na krátkou ukázku.
     </p>
 
     <div class="video-wrap">
-      <video id="rick" controls playsinline>
+      <video controls playsinline>
         <source src="rickroll.mp4" type="video/mp4">
         Tvůj prohlížeč nepodporuje HTML5 video.
       </video>
     </div>
 
-    <p class="loading-text">
-      Pokud se video <span>neukáže</span>, pravděpodobně se nenačetl soubor <code>rickroll.mp4</code>.
+    <p class="info">
+      Po videu můžeš pokračovat na hlavní stránku s odpočtem.
     </p>
+
+    <div class="btn-wrap">
+      <a class="cta-btn" href="https://sentarion.com" target="_blank" rel="noopener">
+        🎬 <span>Pokračovat na odpočet</span>
+      </a>
+    </div>
+
     <p class="hint">
-      Jakmile bude vše fungovat, můžeme znovu zapnout automatické přesměrování.
+      Pokud by se video nenačetlo, je problém v souboru <code>rickroll.mp4</code> (název, umístění nebo formát).
     </p>
   </div>
-
-<script>
-  // Až ověříš, že video funguje, můžeš odkomentovat redirect níže.
-
-  // const REDIRECT_URL = "https://sentarion.com/"; // sem pak dáme odpočet
-  // const DELAY = 7000; // 7 sekund
-
-  // const video = document.getElementById("rick");
-  // video.play().catch(() => {
-  //   // když se nepodaří automaticky spustit, necháme to na uživateli
-  // });
-
-  // setTimeout(() => {
-  //   window.location.href = REDIRECT_URL;
-  // }, DELAY);
-</script>
 
 </body>
 </html>
