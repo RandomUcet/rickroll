@@ -23,9 +23,10 @@
       padding:0;
       margin:0;
       text-align:center;
+      overflow:hidden;
     }
 
-    .video-wrap {
+    .video-container {
       width:100%;
       max-width:900px;
       position:relative;
@@ -33,9 +34,10 @@
       box-shadow:0 0 24px rgba(0,0,0,0.9);
       border-radius:16px;
       overflow:hidden;
+      background:#000;
     }
 
-    .video-wrap video {
+    .video-container video {
       position:absolute;
       top:0;
       left:0;
@@ -43,6 +45,43 @@
       height:100%;
       display:block;
       background:#000;
+    }
+
+    .overlay {
+      position:absolute;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:rgba(0,0,0,0.45);
+      backdrop-filter:blur(2px);
+      -webkit-backdrop-filter:blur(2px);
+      color:#f7f3e9;
+      text-shadow:0 0 8px #000;
+      cursor:pointer;
+      opacity:0;
+      pointer-events:none;
+      transition:opacity 0.25s ease-out;
+    }
+
+    .overlay.visible {
+      opacity:1;
+      pointer-events:auto;
+    }
+
+    .overlay-content {
+      padding:12px 18px;
+      border-radius:999px;
+      border:2px solid rgba(212,175,55,0.9);
+      background:rgba(0,0,0,0.7);
+      display:flex;
+      align-items:center;
+      gap:8px;
+      font-size:0.95rem;
+    }
+
+    .overlay-icon {
+      font-size:1.2rem;
     }
 
     .loading-text {
@@ -66,11 +105,18 @@
 </head>
 <body>
 
-  <div class="video-wrap">
+  <div class="video-container">
     <video id="rick" playsinline>
       <source src="rickroll.mp4" type="video/mp4">
       Tvůj prohlížeč nepodporuje HTML5 video.
     </video>
+
+    <div id="overlay" class="overlay">
+      <div class="overlay-content">
+        <span class="overlay-icon">🔊</span>
+        <span>Klikni pro zvuk</span>
+      </div>
+    </div>
   </div>
 
   <div class="loading-text">
@@ -78,13 +124,15 @@
   </div>
 
 <script>
-  // URL SERIÓZNÍHO ODPOČTU – TADY UPRAV
-  const REDIRECT_URL = "https://sentarion.com/"; // změň, pokud máš jinou URL
+  // URL seriózního odpočtu – UPRAV, pokud máš jinou
+  const REDIRECT_URL = "https://sentarion.com/";
 
-  // Jak dlouho nechat rickroll běžet (ms)
-  const RICKROLL_DELAY = 8000; // 8000 ms = cca 8 sekund
+  // Jak dlouho má stránka zůstat na rickrollu (ms)
+  const RICKROLL_DELAY = 8000; // 8 s
 
   const video = document.getElementById("rick");
+  const overlay = document.getElementById("overlay");
+
   let redirectTimerStarted = false;
 
   function startRedirectTimer() {
@@ -95,22 +143,55 @@
     }, RICKROLL_DELAY);
   }
 
-  // Jakmile je video připravené k přehrání, zkus ho pustit a spustit timer
-  video.addEventListener("canplay", () => {
-    try {
-      video.play().catch(() => {
-        // Když autoplay se zvukem neprojde, necháme aspoň běžet video bez zvuku
-        video.muted = true;
-        video.play().catch(() => {});
+  // Pokus 1: zkusíme přehrát se zvukem
+  function tryPlayWithSound() {
+    video.muted = false;
+    const p = video.play();
+    if (p && typeof p.then === "function") {
+      p.then(() => {
+        // Podařilo se přehrát se zvukem – overlay netřeba
+        overlay.classList.remove("visible");
+        startRedirectTimer();
+      }).catch(() => {
+        // Autoplay se zvukem zablokován → přejdeme na muted režim s overlay
+        startMutedWithOverlay();
       });
-    } catch (e) {}
+    } else {
+      // starší browser – fallback
+      startMutedWithOverlay();
+    }
+  }
 
+  function startMutedWithOverlay() {
+    try {
+      video.muted = true;
+      video.play().catch(() => {});
+    } catch (e) {}
+    // Ukázat overlay pro kliknutí na zvuk
+    overlay.classList.add("visible");
+    // Redirect timer běží i tak – i když někdo neklikne, po chvíli odejde na odpočet
+    startRedirectTimer();
+  }
+
+  // Klik na overlay = zapnout zvuk
+  overlay.addEventListener("click", () => {
+    overlay.classList.remove("visible");
+    video.muted = false;
+    video.play().catch(() => {});
+    // Timer už typicky běží, ale kdyby ne, spustíme
     startRedirectTimer();
   });
 
-  // Fallback – kdyby canplay nikdy neproběhlo (pomalejší net nebo divný browser)
+  // Jakmile je video připravené, zkusíme přehrát se zvukem
+  video.addEventListener("canplay", () => {
+    tryPlayWithSound();
+  });
+
+  // Fallback – kdyby canplay nikdy nepřišlo (divný browser / pomalá síť)
   setTimeout(() => {
-    startRedirectTimer();
+    if (!redirectTimerStarted && video.paused) {
+      startMutedWithOverlay();
+    }
   }, 4000);
 </script>
 
