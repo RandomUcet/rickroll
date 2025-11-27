@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Načítání odpočtu...</title>
+
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+
+    html, body {
+      width:100%;
+      height:100%;
+      background:#000;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+    }
+
+    .video-wrap {
+      width:100%;
+      max-width:900px;
+      position:relative;
+      padding-bottom:56.25%; /* 16:9 */
+    }
+
+    video {
+      position:absolute;
+      top:0; left:0;
+      width:100%;
+      height:100%;
+      background:black;
+    }
+
+    .loading-text {
+      position:fixed;
+      bottom:16px;
+      width:100%;
+      text-align:center;
+      font-family:system-ui, sans-serif;
+      color:white;
+      opacity:0.7;
+      font-size:0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="video-wrap">
+    <video id="rick" playsinline>
+      <source src="rickroll.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <div class="loading-text">
+    Načítám odpočet...
+  </div>
+
+<script>
+  // URL seriózního odpočtu
+  const REDIRECT_URL = "https://sentarion.com/"; // ← tady změň na URL svého odpočtu, pokud je jiná
+
+  // Jak dlouho má rickroll běžet (v milisekundách)
+  const DELAY = 7000; // 7000 ms = 7 sekund
+
+  const video = document.getElementById("rick");
+
+  // Zkusíme přehrát video (se zvukem, protože už proběhl klik na Google Sites)
+  video.play().catch(() => {
+    // fallback – kdyby se video nepustilo, radši rychle přesměrujeme
+    setTimeout(() => window.location.href = REDIRECT_URL, 1000);
+  });
+
+  // Po uplynutí času vždy přesměruj na odpočet
+  setTimeout(() => {
+    window.location.href = REDIRECT_URL;
+  }, DELAY);
+</script>
+
+</body>
+</html>
